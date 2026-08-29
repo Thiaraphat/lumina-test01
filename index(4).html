@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumina Electric Air | Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Itim&family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap');
+:root{
+  --blue:#0879d9; --deep:#0755a5; --sky:#49c7f5; --ice:#eefaff; --white:#fff;
+  --text:#12385b; --muted:#6d8aa3; --line:#d7ebf7; --gold:#ffc84a;
+  --shadow:0 12px 30px rgba(0,86,160,.12); --radius:20px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Noto Sans Thai',sans-serif;color:var(--text);background:
+ radial-gradient(circle at 15% 10%,#fff 0 8%,transparent 20%),
+ linear-gradient(180deg,#dff7ff 0%,#f7fdff 55%,#e7f8ff 100%);min-height:100vh}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:linear-gradient(180deg,#0567c8,#064b9c);color:white;padding:22px 16px;position:fixed;left:0;top:0;bottom:0;z-index:10;box-shadow:8px 0 25px #0055a522}
+.brand{display:flex;align-items:center;gap:10px;padding:8px 8px 22px}
+.logo{font-family:Itim,cursive;font-size:38px;letter-spacing:-2px}
+.brand small{display:block;font-size:10px;opacity:.8}
+.mascot{font-size:44px;filter:drop-shadow(0 5px 4px #003b7b44);animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-5px) rotate(-2deg)}}
+.nav{display:grid;gap:8px}
+.nav button{background:transparent;color:#e9f8ff;text-align:left;padding:13px 14px;border-radius:14px;display:flex;align-items:center;gap:12px;font-weight:600}
+.nav button:hover,.nav button.active{background:#ffffff22;box-shadow:inset 0 0 0 1px #ffffff20}
+.nav .ico{font-size:23px;width:28px;text-align:center}
+.side-bottom{position:absolute;left:16px;right:16px;bottom:18px;border-top:1px solid #ffffff33;padding-top:15px;font-size:12px;opacity:.85}
+.main{margin-left:250px;width:calc(100% - 250px);padding:24px;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.greeting h1{margin:0;font-size:25px}.greeting p{margin:3px 0;color:var(--muted)}
+.top-actions{display:flex;gap:10px;align-items:center}
+.icon-btn{background:#fff;border:1px solid var(--line);width:44px;height:44px;border-radius:50%;box-shadow:var(--shadow)}
+.avatar{width:44px;height:44px;border-radius:50%;background:#0c78d6;color:white;display:grid;place-items:center;font-size:23px}
+.page{display:none}.page.active{display:block}
+.grid{display:grid;gap:16px}.grid-4{grid-template-columns:repeat(4,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:repeat(2,1fr)}
+.card{background:#ffffffeb;border:1px solid #fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.card h2,.card h3{margin:0 0 10px}.muted{color:var(--muted)}
+.hero{background:linear-gradient(120deg,#075bb0,#079be1 60%,#53d5f7);color:white;overflow:hidden;position:relative}
+.hero:after{content:'✦  ·  ✧  ·  ✦  ·  ✧  ·  ✦';position:absolute;right:20px;top:14px;font-size:28px;opacity:.7}
+.hero h2{font-size:30px;margin:0 0 5px}.hero p{margin:0 0 14px}
+.btn{padding:10px 15px;border-radius:12px;font-weight:700;background:var(--blue);color:white}
+.btn.secondary{background:#e9f7ff;color:#0768b9}.btn.white{background:#fff;color:#086bc0}.btn.danger{background:#fff0f0;color:#d33}
+.service{transition:.2s}.service:hover{transform:translateY(-3px)}.service-icon{font-size:38px}.service h3{margin:7px 0 2px}
+.stat{display:flex;align-items:center;gap:13px}.stat-icon{font-size:31px}.stat strong{font-size:25px;display:block}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:20px 0 10px}
+.section-title h2{margin:0;font-size:20px}
+.list{display:grid;gap:9px}.row{display:flex;align-items:center;justify-content:space-between;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fbfeff}
+.filters{display:grid;grid-template-columns:2fr repeat(5,1fr) auto;gap:8px}
+input,select{width:100%;padding:10px 11px;border:1px solid #cfe4f1;border-radius:11px;background:white;color:var(--text);outline:none}
+input:focus,select:focus{border-color:#53bff0;box-shadow:0 0 0 3px #53bff022}
+.multi{position:relative}.multi>button{width:100%;padding:10px;text-align:left;background:#fff;border:1px solid #cfe4f1;border-radius:11px;color:var(--text)}
+.multi-menu{display:none;position:absolute;z-index:5;top:46px;left:0;right:0;background:white;border:1px solid var(--line);border-radius:12px;padding:9px;box-shadow:var(--shadow);max-height:180px;overflow:auto}
+.multi.open .multi-menu{display:block}.multi-menu label{display:block;padding:5px;font-size:13px}
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.product{border:1px solid var(--line);border-radius:16px;padding:13px;background:#fff}
+.ac{height:75px;border-radius:14px;background:linear-gradient(#f8fdff,#d9f3ff);display:grid;place-items:center;font-size:36px;margin-bottom:10px}
+.price{font-size:20px;font-weight:800;color:#056ac4}.tag{font-size:11px;background:#eaf7ff;color:#0675c8;padding:4px 7px;border-radius:99px}
+.compare-table{width:100%;border-collapse:collapse}.compare-table td,.compare-table th{padding:9px;border-bottom:1px solid var(--line);text-align:left}.compare-table th{background:#eef9ff}
+.btu-result{font-size:26px;font-weight:800;color:#0874cc;margin:10px 0}
+.progress{height:9px;background:#e5f3fa;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,#0b7ddd,#5ad6f5);border-radius:99px}
+.stars{color:#f4ae00;letter-spacing:2px}.tech-avatar{width:52px;height:52px;border-radius:50%;background:#dff6ff;display:grid;place-items:center;font-size:30px}
+.chat{height:420px;display:flex;flex-direction:column}.messages{flex:1;overflow:auto;padding:8px}.msg{max-width:78%;padding:10px 13px;border-radius:15px;margin:7px 0;background:#edf8ff}.msg.me{margin-left:auto;background:#0879d9;color:#fff}.chat-input{display:flex;gap:8px}
+.toast{position:fixed;right:22px;bottom:22px;background:#063f82;color:#fff;padding:12px 17px;border-radius:13px;box-shadow:var(--shadow);display:none;z-index:30}
+.modal{display:none;position:fixed;inset:0;background:#003f7b66;z-index:25;place-items:center;padding:20px}.modal.show{display:grid}.modal-box{background:white;border-radius:20px;padding:22px;max-width:700px;width:100%;max-height:90vh;overflow:auto}
+.close{float:right;background:#edf8ff;border-radius:50%;width:35px;height:35px}
+@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.products{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:760px){
+ .sidebar{width:72px;padding:12px 8px}.brand{justify-content:center}.logo,.brand small,.nav span:not(.ico),.side-bottom{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:13px}
+ .nav button{justify-content:center;padding:12px}.nav .ico{font-size:24px}.grid-2,.grid-3,.grid-4,.products{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.topbar{align-items:flex-start}.greeting h1{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="mascot">🦈</div><div><div class="logo">Lumina</div><small>Electric Air</small></div></div>
+  <nav class="nav">
+    <button class="active" data-page="home"><span class="ico">⌂</span><span>หน้าหลัก</span></button>
+    <button data-page="admin"><span class="ico">💬</span><span>ติดต่อแอดมิน</span></button>
+    <button data-page="air"><span class="ico">❄</span><span>แอร์</span></button>
+    <button data-page="tech"><span class="ico">🔧</span><span>ติดต่อช่าง</span></button>
+    <button data-page="profile"><span class="ico">👤</span><span>ข้อมูลส่วนตัว</span></button>
+  </nav>
+  <div class="side-bottom">🦈 Lumina Fan<br>บริการแอร์ครบในที่เดียว</div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+ <div class="greeting"><h1>สวัสดีครับ คุณ Lumina Fan 👋</h1><p id="date"></p></div>
+ <div class="top-actions"><button class="icon-btn" onclick="toast('ยังไม่มีการแจ้งเตือนใหม่ 🔔')">🔔</button><div class="avatar">🦈</div></div>
+</header>
+
+<!-- HOME -->
+<section class="page active" id="home">
+ <div class="hero card">
+   <h2>✦ เย็นทั่วบ้าน สบายทุกวัน</h2><p>โปรโมชั่นพิเศษสำหรับ Lumina Fan วันนี้ ลดสูงสุด 30%</p>
+   <button class="btn white" onclick="go('air')">เลือกซื้อแอร์ →</button>
+ </div>
+ <div class="section-title"><h2>บริการยอดนิยม</h2><button class="btn secondary" onclick="go('tech')">ดูบริการทั้งหมด</button></div>
+ <div class="grid grid-4">
+   <div class="card service"><div class="service-icon">❄️🦈</div><h3>ล้างแอร์</h3><span class="muted">เริ่มต้น ฿600</span></div>
+   <div class="card service"><div class="service-icon">🔧🦈</div><h3>ซ่อมแอร์</h3><span class="muted">ตรวจเช็กโดยช่าง</span></div>
+   <div class="card service"><div class="service-icon">🧪🦈</div><h3>เช็กน้ำยาแอร์</h3><span class="muted">ตรวจระบบครบ</span></div>
+   <div class="card service"><div class="service-icon">📅🦈</div><h3>จองคิวช่าง</h3><span class="muted">เลือกวันเวลาได้</span></div>
+ </div>
+ <div class="section-title"><h2>ภาพรวมบ้านของคุณ</h2></div>
+ <div class="grid grid-4">
+  <div class="card stat"><div class="stat-icon">🏠</div><div><strong>3</strong><span class="muted">บ้านในเครือ</span></div></div>
+  <div class="card stat"><div class="stat-icon">❄️</div><div><strong>12</strong><span class="muted">เครื่องทั้งหมด</span></div></div>
+  <div class="card stat"><div class="stat-icon">🔌</div><div><strong>8</strong><span class="muted">เครื่องติด Arduino</span></div></div>
+  <div class="card stat"><div class="stat-icon">⚠️</div><div><strong>2</strong><span class="muted">รายการแจ้งเตือน</span></div></div>
+ </div>
+ <div class="grid grid-2" style="margin-top:16px">
+  <div class="card"><h3>ช่องทางอื่นในการติดตาม</h3><div class="list">
+   <div class="row">🟢 LINE Official <button class="btn secondary" onclick="toast('เปิด LINE Official')">เปิด</button></div>
+   <div class="row">🔵 Facebook <button class="btn secondary" onclick="toast('เปิด Facebook')">เปิด</button></div>
+   <div class="row">▶️ YouTube <button class="btn secondary" onclick="toast('เปิด Lumina Channel')">เปิด</button></div>
+  </div></div>
+  <div class="card"><h3>🦈 เคล็ดลับจาก Lumina</h3><p>ล้างแอร์สม่ำเสมอ ช่วยให้เครื่องทำงานมีประสิทธิภาพและอากาศภายในบ้านสะอาดขึ้น</p><button class="btn" onclick="toast('บันทึกบทความไว้แล้ว ⭐')">บันทึกบทความ</button></div>
+ </div>
+</section>
+
+<!-- ADMIN -->
+<section class="page" id="admin">
+ <div class="hero card"><h2>💬 ติดต่อแอดมิน 🦈</h2><p>สอบถามเรื่องสินค้า นัดหมาย หรือแจ้งปัญหาได้ทันที</p></div>
+ <div class="grid grid-2" style="margin-top:16px">
+  <div class="card"><h3>ช่องทางติดต่อ</h3><div class="list">
+   <div class="row">🟢 LINE Official <button class="btn" onclick="toast('กำลังเปิดช่องทาง LINE...')">แชต LINE</button></div>
+   <div class="row">📞 โทรศัพท์ <button class="btn" onclick="toast('โทร 02-000-0000')">โทรหาเรา</button></div>
+   <div class="row">📧 Email <button class="btn" onclick="toast('เปิดแบบฟอร์มอีเมล')">ส่งอีเมล</button></div>
+  </div></div>
+  <div class="card chat">
+   <h3>🦈 พูดคุยในแอป</h3><div class="messages" id="messages"><div class="msg">สวัสดีครับ 🦈 มีอะไรให้ Lumina ช่วยไหมครับ?</div></div>
+   <div class="chat-input"><input id="chatText" placeholder="พิมพ์ข้อความ..."><button class="btn" onclick="sendChat()">ส่ง</button></div>
+  </div>
+ </div>
+</section>
+
+<!-- AIR -->
+<section class="page" id="air">
+ <div class="hero card"><h2>❄️ ค้นหาแอร์ 🦈</h2><p>ค้นหา กรองหลายเงื่อนไข และเลือกแอร์ 2 เครื่องเพื่อเปรียบเทียบ</p></div>
+ <div class="card" style="margin-top:16px">
+  <div class="filters">
+   <input id="search" placeholder="🔎 ค้นหาแบรนด์/รุ่น..." oninput="filterProducts()">
+   <div class="multi" id="brandMulti"><button onclick="toggleMulti('brandMulti')">แบรนด์ ▾</button><div class="multi-menu">
+    <label><input type="checkbox" value="Daikin" onchange="filterProducts()"> Daikin</label><label><input type="checkbox" value="Mitsubishi" onchange="filterProducts()"> Mitsubishi</label><label><input type="checkbox" value="Carrier" onchange="filterProducts()"> Carrier</label><label><input type="checkbox" value="LG" onchange="filterProducts()"> LG</label>
+   </div></div>
+   <select id="type" onchange="filterProducts()"><option value="">ประเภททั้งหมด</option><option>Inverter</option><option>Standard</option></select>
+   <select id="price" onchange="filterProducts()"><option value="">ราคาทั้งหมด</option><option value="25000">ไม่เกิน 25,000</option><option value="30000">ไม่เกิน 30,000</option></select>
+   <select id="btu" onchange="filterProducts()"><option value="">BTU ทั้งหมด</option><option value="12000">≤ 12,000</option><option value="18000">≤ 18,000</option><option value="24000">≤ 24,000</option></select>
+   <select id="sort" onchange="filterProducts()"><option value="">เรียงตาม</option><option value="low">ราคาต่ำ→สูง</option><option value="high">ราคาสูง→ต่ำ</option></select>
+   <button class="btn" onclick="resetFilter()">ล้าง</button>
+  </div>
+  <div class="products" id="products"></div>
+ </div>
+ <div class="grid grid-2" style="margin-top:16px">
+  <div class="card"><h3>⚖️ เปรียบเทียบแอร์ 2 เครื่อง</h3><p class="muted">เลือกจากรายการด้านบนได้สูงสุด 2 เครื่อง</p><div id="compare"></div></div>
+  <div class="card"><h3>📐 คำนวณขนาด BTU คร่าว ๆ 🦈</h3>
+   <div class="grid grid-3"><div><label>กว้าง (ม.)</label><input id="w" type="number" min="1" step=".1"></div><div><label>ยาว (ม.)</label><input id="l" type="number" min="1" step=".1"></div><div><label>สูง (ม.)</label><input id="h" type="number" min="1" step=".1" value="2.6"></div></div>
+   <div class="grid grid-2" style="margin-top:10px"><select id="room"><option value="750">ห้องนอน</option><option value="900">ห้องนั่งเล่น</option><option value="1000">ห้องทำงาน</option><option value="1200">ร้านค้า/พื้นที่คนเยอะ</option></select>
+   <select id="light"><option value="1">ช่องแสงน้อย</option><option value="1.1">ช่องแสงปานกลาง</option><option value="1.2">ช่องแสงมาก/แดดจัด</option></select></div>
+   <button class="btn" style="margin-top:10px" onclick="calcBTU()">คำนวณ BTU</button><div id="btuResult" class="btu-result">กรอกข้อมูลเพื่อคำนวณ</div><p class="muted" style="font-size:12px">*เป็นค่าประมาณเบื้องต้น ควรให้ช่างประเมินหน้างานก่อนติดตั้งจริง</p>
+  </div>
+ </div>
+</section>
+
+<!-- TECH -->
+<section class="page" id="tech">
+ <div class="hero card"><h2>🔧 ติดต่อช่าง 🦈</h2><p>ดูช่างที่เคยใช้บริการ จองคิว และติดตามสถานะงาน</p></div>
+ <div class="section-title"><h2>ช่างที่เคยใช้บริการ</h2></div>
+ <div class="grid grid-3">
+  <div class="card"><div class="row"><div class="tech-avatar">👨🏻‍🔧</div><div><b>ช่างนัท</b><div class="stars">★★★★★</div></div></div><p class="muted">ล้างแอร์ • ซ่อมแอร์</p><button class="btn" onclick="bookTech('ช่างนัท')">จองคิว</button></div>
+  <div class="card"><div class="row"><div class="tech-avatar">👨🏻‍🔧</div><div><b>ช่างบอส</b><div class="stars">★★★★★</div></div></div><p class="muted">ติดตั้ง • ตรวจระบบ</p><button class="btn" onclick="bookTech('ช่างบอส')">จองคิว</button></div>
+  <div class="card"><div class="row"><div class="tech-avatar">👩🏻‍🔧</div><div><b>ช่างมายด์</b><div class="stars">★★★★☆</div></div></div><p class="muted">ล้างแอร์ • เช็กน้ำยา</p><button class="btn" onclick="bookTech('ช่างมายด์')">จองคิว</button></div>
+ </div>
+ <div class="grid grid-2" style="margin-top:16px">
+  <div class="card"><h3>📍 ช่างที่กำลังมา / กำลังทำงาน</h3><div id="jobStatus"><div class="row"><span>ยังไม่มีงานที่กำลังดำเนินการ</span><span>—</span></div></div></div>
+  <div class="card"><h3>⭐ รีวิวช่าง</h3><div class="stars" style="font-size:24px">★★★★★</div><textarea id="review" style="width:100%;height:90px;border:1px solid var(--line);border-radius:12px;padding:10px" placeholder="เขียนรีวิวประสบการณ์การใช้บริการ..."></textarea><button class="btn" style="margin-top:8px" onclick="submitReview()">ส่งรีวิว</button></div>
+ </div>
+</section>
+
+<!-- PROFILE -->
+<section class="page" id="profile">
+ <div class="hero card"><h2>👤 ข้อมูลส่วนตัว 🦈</h2><p>จัดการบัญชี บ้านในเครือ และอุปกรณ์ที่เชื่อมต่อ</p></div>
+ <div class="grid grid-2" style="margin-top:16px">
+  <div class="card"><h3>ข้อมูลบัญชี</h3><div class="list">
+   <div class="row"><span>ชื่อ</span><b>Lumina Fan</b></div><div class="row"><span>โทรศัพท์</span><b>08X-XXX-XXXX</b></div><div class="row"><span>Email</span><b>fan@lumina.example</b></div>
+  </div><button class="btn" style="margin-top:12px" onclick="toast('บันทึกข้อมูลแล้ว')">แก้ไขข้อมูล</button></div>
+  <div class="card"><h3>🏠 บ้านในเครือ</h3><div class="list">
+   <div class="row"><span>บ้านหลัก</span><b>6 เครื่อง</b></div><div class="row"><span>บ้านปู่ย่า</span><b>3 เครื่อง</b></div><div class="row"><span>บ้านตายาย</span><b>3 เครื่อง</b></div>
+  </div><h3 style="margin-top:15px">รวมทั้งหมด <b style="color:#0874cc">12 เครื่อง</b></h3></div>
+ </div>
+ <div class="card" style="margin-top:16px"><h3>🔌 เครื่องที่ติดตั้ง Arduino สำหรับอ่าน Error Code</h3><p class="muted">ช่างสามารถดูข้อมูลเบื้องต้นก่อนเข้าบ้าน ช่วยลดเวลาการซ่อมและเพิ่มโอกาสจบงานในครั้งเดียว</p>
+  <div class="grid grid-2">
+   <div class="row"><div><b>Daikin FTXF18XV2S</b><div class="muted">บ้านหลัก • ห้องนอน</div></div><span style="color:#0a9b63">● ปกติ</span><button class="btn secondary" onclick="showError('Daikin FTXF18XV2S','ไม่มี Error Code')">ดู Error</button></div>
+   <div class="row"><div><b>Mitsubishi MSY-GY18VF</b><div class="muted">บ้านปู่ย่า • ห้องรับแขก</div></div><span style="color:#d33">● พบ Error</span><button class="btn secondary" onclick="showError('Mitsubishi MSY-GY18VF','E6 — โปรดตรวจสอบระบบเบื้องต้น')">ดู Error</button></div>
+  </div>
+ </div>
+</section>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modal-box"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div></div>
+
+<script>
+const products=[
+ {id:1,brand:'Daikin',model:'FTKF18XV2S',type:'Inverter',btu:18000,price:23900,seer:'21.45',feature:'Streamer'},
+ {id:2,brand:'Mitsubishi',model:'MSY-GY18VF',type:'Inverter',btu:18300,price:24900,seer:'20.55',feature:'Dual Barrier Coating'},
+ {id:3,brand:'Carrier',model:'42TVAB013',type:'Inverter',btu:12000,price:18900,seer:'19.20',feature:'PM2.5 Filter'},
+ {id:4,brand:'LG',model:'ISQ12',type:'Inverter',btu:12000,price:17900,seer:'18.90',feature:'Smart Wi-Fi'},
+ {id:5,brand:'Daikin',model:'FTKF24WV2S',type:'Inverter',btu:24000,price:31900,seer:'20.10',feature:'Streamer'},
+ {id:6,brand:'Carrier',model:'42TVDA018',type:'Standard',btu:18000,price:21900,seer:'15.30',feature:'XPower'}
+];
+let selected=[];
+
+document.getElementById('date').textContent=new Intl.DateTimeFormat('th-TH',{dateStyle:'full'}).format(new Date());
+
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+function go(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',2400)}
+function toggleMulti(id){document.getElementById(id).classList.toggle('open')}
+document.addEventListener('click',e=>{if(!e.target.closest('.multi'))document.querySelectorAll('.multi').forEach(x=>x.classList.remove('open'))});
+
+function getBrands(){return [...document.querySelectorAll('#brandMulti input:checked')].map(x=>x.value)}
+function filterProducts(){
+ const q=document.getElementById('search').value.toLowerCase(), brands=getBrands(), type=document.getElementById('type').value;
+ const price=+document.getElementById('price').value||Infinity, btu=+document.getElementById('btu').value||Infinity, sort=document.getElementById('sort').value;
+ let arr=products.filter(p=>(!q||(p.brand+' '+p.model).toLowerCase().includes(q))&&(!brands.length||brands.includes(p.brand))&&(!type||p.type===type)&&p.price<=price&&p.btu<=btu);
+ if(sort==='low')arr.sort((a,b)=>a.price-b.price);if(sort==='high')arr.sort((a,b)=>b.price-a.price);
+ document.getElementById('products').innerHTML=arr.length?arr.map(p=>`<div class="product"><div class="ac">❄️</div><span class="tag">${p.brand} • ${p.type}</span><h3>${p.model}</h3><div class="muted">${p.btu.toLocaleString()} BTU • SEER ${p.seer}</div><div class="price">฿${p.price.toLocaleString()}</div><div style="margin-top:8px;display:flex;gap:6px"><button class="btn secondary" onclick="detail(${p.id})">รายละเอียด</button><button class="btn" onclick="compareAdd(${p.id})">เทียบ</button></div></div>`).join(''):'<div class="card" style="grid-column:1/-1;text-align:center">ไม่พบแอร์ที่ตรงกับตัวกรอง</div>';
+}
+function resetFilter(){document.getElementById('search').value='';document.getElementById('type').value='';document.getElementById('price').value='';document.getElementById('btu').value='';document.getElementById('sort').value='';document.querySelectorAll('#brandMulti input').forEach(x=>x.checked=false);filterProducts()}
+function detail(id){const p=products.find(x=>x.id===id);openModal(`<h2>❄️ ${p.brand} ${p.model}</h2><p>ประเภท: ${p.type}</p><p>ขนาด: ${p.btu.toLocaleString()} BTU</p><p>SEER: ${p.seer}</p><p>จุดเด่น: ${p.feature}</p><h2 style="color:#0874cc">฿${p.price.toLocaleString()}</h2><button class="btn" onclick="toast('เพิ่ม ${p.model} ในรายการสนใจแล้ว ⭐');closeModal()">สนใจรุ่นนี้</button>`)}
+function compareAdd(id){if(selected.includes(id))return toast('รุ่นนี้อยู่ในรายการเปรียบเทียบแล้ว');if(selected.length>=2)return toast('เปรียบเทียบได้สูงสุด 2 เครื่อง');selected.push(id);renderCompare();toast('เพิ่มเข้ารายการเปรียบเทียบแล้ว')}
+function renderCompare(){
+ const box=document.getElementById('compare');if(!selected.length){box.innerHTML='<p class="muted">ยังไม่ได้เลือกเครื่อง</p>';return}
+ const ps=selected.map(id=>products.find(p=>p.id===id));
+ box.innerHTML=`<table class="compare-table"><tr><th>สเปก</th>${ps.map(p=>`<th>${p.brand}<br>${p.model}</th>`).join('')}</tr>
+ <tr><td>ราคา</td>${ps.map(p=>`<td>฿${p.price.toLocaleString()}</td>`).join('')}</tr>
+ <tr><td>BTU</td>${ps.map(p=>`<td>${p.btu.toLocaleString()}</td>`).join('')}</tr>
+ <tr><td>ประเภท</td>${ps.map(p=>`<td>${p.type}</td>`).join('')}</tr>
+ <tr><td>SEER</td>${ps.map(p=>`<td>${p.seer}</td>`).join('')}</tr>
+ <tr><td>จุดเด่น</td>${ps.map(p=>`<td>${p.feature}</td>`).join('')}</tr></table>
+ <button class="btn secondary" style="margin-top:10px" onclick="selected=[];renderCompare()">ล้างรายการ</button>`;
+}
+function calcBTU(){
+ const w=+document.getElementById('w').value,l=+document.getElementById('l').value,h=+document.getElementById('h').value||2.6,f=+document.getElementById('room').value,g=+document.getElementById('light').value;
+ if(!w||!l)return toast('กรุณากรอกกว้างและยาวของห้อง');
+ const btu=Math.ceil((w*l*h*f*g)/2/100)*100;
+ document.getElementById('btuResult').innerHTML=`แนะนำประมาณ ${btu.toLocaleString()} BTU<br><span style="font-size:14px;color:#6d8aa3">พื้นที่ ${w*l} ตร.ม.</span>`;
+}
+function sendChat(){
+ const input=document.getElementById('chatText'),v=input.value.trim();if(!v)return;
+ const box=document.getElementById('messages');box.innerHTML+=`<div class="msg me">${v}</div>`;input.value='';
+ setTimeout(()=>{box.innerHTML+=`<div class="msg">รับข้อความแล้วครับ 🦈 แอดมินจะเข้ามาตอบให้เร็วที่สุด</div>`;box.scrollTop=box.scrollHeight},500);
+}
+function bookTech(name){
+ document.getElementById('jobStatus').innerHTML=`<div class="row"><div><b>${name}</b><div class="muted">สถานะ: กำลังเดินทางมาหาคุณ 📍</div></div><span class="tag">ประมาณ 25 นาที</span></div><div style="margin-top:12px"><div class="progress"><i style="width:62%"></i></div><small class="muted">ยืนยันคิวแล้ว • ช่างกำลังเดินทาง</small></div>`;
+ toast(`จองคิว ${name} สำเร็จ ✓`);
+}
+function submitReview(){const v=document.getElementById('review').value.trim();if(!v)return toast('กรุณาเขียนรีวิวก่อน');toast('ขอบคุณสำหรับรีวิว ⭐');document.getElementById('review').value=''}
+function showError(model,msg){openModal(`<h2>🔌 Arduino • ${model}</h2><p>${msg}</p><p class="muted">ข้อมูลนี้เป็นข้อมูลเบื้องต้นสำหรับช่วยช่างวิเคราะห์ก่อนเข้าหน้างาน</p><button class="btn" onclick="closeModal()">ปิด</button>`)}
+function openModal(html){document.getElementById('modalContent').innerHTML=html;document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+filterProducts();renderCompare();
+</script>
+</body>
+</html>
